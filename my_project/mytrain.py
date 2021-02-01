@@ -68,6 +68,8 @@ def get_parser():
         default=[
             # 'MODEL.DEVICE', 'cuda:1',
             # 'MODEL.STUDENT_WEIGHTS', '/data_4t/xk/ReID/fast-reid-master/logs/market1501/12_bagtricks_mobileFN_GDConv_SGD_lr0p01_bnprelu_kd/model_final.pth',
+            # 'MODEL.STUDENT_WEIGHTS', '/data_4t/xk/ReID/fast-reid-master/logs/market1501/23_bagtricks_mobileFNair_GDConv_SGD_lr0p01_kd/model_final.pth',
+            'MODEL.STUDENT_WEIGHTS', '/data_4t/xk/ReID/fast-reid-master/logs/market1501/34_bagtricks_shufflev2_1p0x_GAP_SGD_lr0p01_kd/model_final.pth',
             'MODEL.TEACHER_WEIGHTS', '/data_4t/xk/ReID/fast-reid-master/logs/market1501/1_bagtricks_R50_20201125_Adam_lr0p00035/model_final.pth'
                 ],
         nargs=argparse.REMAINDER, 
@@ -103,7 +105,7 @@ def main(args):
 
 if __name__ == "__main__":
 
-    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
     args = get_parser().parse_args()
     print("Command Line Args:", args)

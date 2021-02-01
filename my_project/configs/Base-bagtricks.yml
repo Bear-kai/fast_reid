@@ -12,21 +12,21 @@ MODEL:
     # PRETRAIN: True
     # PRETRAIN_PATH: "/data_4t/xk/classification/pretrained_models/resnet50-19c8e357.pth"
 
-    # 选用mobilefacenet(_air)时, 须设置HEADS.POOL_LAYER='identity'
-    # NAME: 'build_mobilefacenet_air' # 'build_mobilefacenet_air'  #  
-    # POOL_TYPE: 'GDConv'          # 'GDConv'  'GAP'  'GMP'  'GAMP_add'  'GAMP_cat'    *****
-    # SETTING_STR: 'MobileFaceNet' # 该参数对_air无效
-    # L7SCALE: 1                   # for GAMP_cat, 输出特征维度是否加倍                  *****
-    # FEAT_DIM: 128                # for GAMP_cat: 128*L7SCALE ，for其他：128           *****
+    # # 选用mobilefacenet(_air)时, 须设置HEADS.POOL_LAYER='identity'
+    # NAME: 'build_mobilefacenet_air' # 'build_mobilefacenet'  #  
+    # POOL_TYPE: 'GAP'                # 'GDConv'  'GAP'  'GMP'  'GAMP_add'  'GAMP_cat'    *****
+    # SETTING_STR: 'MobileFaceNet'    # 该参数对_air无效
+    # L7SCALE: 1                      # 用于GAMP_cat, 输出特征维度是否加倍                  *****
+    # FEAT_DIM: 128                   # 对于GAMP_cat: 设置128*L7SCALE ，对于其他：设置128   *****
     # CBAM: False
     # PRETRAIN: False
     # PRETRAIN_PATH: ''
 
-    # 选用shufflenetv2时, 须设置HEADS.POOL_LAYER='avgpool'/'maxpool'/'avgmaxpool'
-    NAME: 'build_shufflenetv2'    # 'build_mobilefacenet_air'  #  
+    # 选用shufflenetv2时, 须设置HEADS.POOL_LAYER='avgpool'(即GAP)/'maxpool'(即'GMP')/'avgmaxpool'(即'GAMP_add')
+    NAME: 'build_shufflenetv2'    
     MODEL_SIZE: '1.0x'            # '0.5x'  '1.0x'  '1.5x'  '2.0x'
-    POOL_LAYER: 'pool_s2'         # 'pool_s2'  'pool_s1'  'no_pool'                  *****
-    FEAT_DIM: 1024                # for GAMP_cat: 128*L7SCALE ，for其他：128           *****
+    POOL_LAYER: 'pool_s1'         # 'pool_s2'  'pool_s1'  'no_pool'                  *****
+    FEAT_DIM: 128                 # 1024  128                                        *****
     PRETRAIN: False
     PRETRAIN_PATH: ''
 
@@ -34,7 +34,7 @@ MODEL:
     NAME: "EmbeddingHead"
     NORM: "BN"
     WITH_BNNECK: True
-    POOL_LAYER: "avgpool"   # avgpool  maxpool  avgmaxpool  identity      *****
+    POOL_LAYER: "avgpool"   # avgpool  maxpool  avgmaxpool  identity                *****
     NECK_FEAT: "before"      # before  after 
     CLS_LAYER: "linear"
 
@@ -75,7 +75,7 @@ SOLVER:
   HEADS_LR_FACTOR: 1.           # 
   WEIGHT_DECAY: 0.0005
   WEIGHT_DECAY_BIAS: 0.0005     
-  IMS_PER_BATCH: 64             # batch_size 64 *****
+  IMS_PER_BATCH: 32            # batch_size 64                *****
 
   SCHED: "WarmupMultiStepLR"
   STEPS: [40, 70]               # [40,90]   论文中的是[40,70]
@@ -95,8 +95,8 @@ DATASETS:
   TESTS: ("Market1501",)
 
 # OUTPUT_DIR: "logs/market1501/bagtricks_R50_20201206_Adam_lr0p00035_factor1_step70_1gpu"
-# OUTPUT_DIR: "logs/market1501/23_bagtricks_mobileFNair_GDConv_SGD_lr0p01_kd"
-OUTPUT_DIR: "logs/market1501/25_bagtricks_shufflev2_1p0x_GAP_SGD_lr0p01_kd"
+# OUTPUT_DIR: "logs/market1501/42_bagtricks_mobileFNair_GAP_SGD_lr0p01_kd_bs32"
+OUTPUT_DIR: "logs/market1501/43_bagtricks_shufflev2_1p0x_GAP_SGD_lr0p01_kd_bs32"
 
 CUDNN_BENCHMARK: True
 

@@ -73,20 +73,20 @@ class ShuffleNetV2(nn.Module):
         https://github.com/megvii-model/ShuffleNet-Series/tree/master/ShuffleNetV2
     """
 
-    def __init__(self, input_size=224, n_class=1000, model_size='0.5x'):
+    def __init__(self, input_size=224, n_class=1000, model_size='0.5x', feat_dim=1024):
         super(ShuffleNetV2, self).__init__()
         print('model size is ', model_size)
 
         self.stage_repeats = [4, 8, 4]
         self.model_size = model_size
         if model_size == '0.5x':
-            self.stage_out_channels = [-1, 24, 48, 96, 192, 1024]
+            self.stage_out_channels = [-1, 24, 48, 96, 192, feat_dim]   # 将1024替换为参数feat_dim
         elif model_size == '1.0x':
-            self.stage_out_channels = [-1, 24, 116, 232, 464, 1024]
+            self.stage_out_channels = [-1, 24, 116, 232, 464, feat_dim]
         elif model_size == '1.5x':
-            self.stage_out_channels = [-1, 24, 176, 352, 704, 1024]
+            self.stage_out_channels = [-1, 24, 176, 352, 704, feat_dim]
         elif model_size == '2.0x':
-            self.stage_out_channels = [-1, 24, 244, 488, 976, 2048]
+            self.stage_out_channels = [-1, 24, 244, 488, 976, feat_dim*2]
         else:
             raise NotImplementedError
 
@@ -170,7 +170,7 @@ class ShuffleNetV2Backbone(nn.Module):
     def __init__(self, model_size, pretrained=False, pretrain_path='', **args):
         super(ShuffleNetV2Backbone, self).__init__()
 
-        model = ShuffleNetV2(model_size=model_size)
+        model = ShuffleNetV2(model_size=model_size, feat_dim=args['feat_dim'])
         if pretrained:
             new_state_dict = OrderedDict()
             state_dict = torch.load(pretrain_path)['state_dict']
@@ -179,9 +179,6 @@ class ShuffleNetV2Backbone(nn.Module):
                     k = k[7:]
                 new_state_dict[k] = v
             model.load_state_dict(new_state_dict, strict=True)
-
-        if args['feat_dim']:
-            model.stage_out_channels[-1] = args['feat_dim']
 
         if args['pool_layer'] == 'pool_s2':
             self.backbone = nn.Sequential(
